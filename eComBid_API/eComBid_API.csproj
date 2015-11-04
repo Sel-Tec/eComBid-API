@@ -56,7 +56,7 @@
     <Compile Include="Domain\SocialMediaSource.cs" />
     <Compile Include="Domain\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\AESThenHMAC.cs" />
+    <Compile Include="Utility\AESThenHMAC.cs" />
     <Compile Include="Security\Authentication.cs" />
     <Compile Include="Utility\BoolExt.cs" />
     <Compile Include="Utility\ConfigMember.cs" />

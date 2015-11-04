@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace eComBid_API.Security
+namespace eComBid_API.Utility
 {
     public static class AESThenHMAC
     {

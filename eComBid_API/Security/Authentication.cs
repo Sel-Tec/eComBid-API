@@ -7,10 +7,18 @@ namespace eComBid_API.Security
         #region members
         public string _authToken;
 
+        const string _seperator = "ZxA(";
+        const double _tokenValidity = 60; //token validity in hours
+
         public string AuthToken
         {
             get { return this._authToken; }
         }
+
+        public string DeviceId { get; set; }
+        public int UserId { get; set; }
+        public DateTime TokenGenerationDT { get; set; }
+        public DateTime TokenExpirationDT { get { return TokenGenerationDT.AddHours(_tokenValidity); } }
 
         #endregion
 
@@ -28,16 +36,20 @@ namespace eComBid_API.Security
 
         #endregion
 
-
         #region methods
 
-        public static string GenerateNewToken(int userId)
+        public string GenerateNewToken(int userId)
         {
-            string key = Guid.NewGuid().ToString() +"ZxA" + "Replace with IMEI" + "ZxA" + "Replace with UserId" + "ZxA" + "replace with datetime";
+            string key = Guid.NewGuid().ToString() + _seperator 
+                        + DeviceId + _seperator 
+                        + UserId + _seperator 
+                        + TokenGenerationDT;
             return "";
         }
 
-        public static string RefreshToken(int userId, string authToken)
+
+
+        public string RefreshToken(int userId, string authToken)
         {
             return "";
         }
