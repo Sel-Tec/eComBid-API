@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="eComBid_Service.ECBService" CodeBehind="ECBService.svc.cs" %>
