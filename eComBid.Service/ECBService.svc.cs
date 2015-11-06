@@ -7,6 +7,7 @@ using System.ServiceModel.Web;
 using System.Text;
 
 using eComBid.API.Domain;
+using System.ServiceModel.Channels;
 
 namespace eComBid.Service
 {
@@ -14,12 +15,32 @@ namespace eComBid.Service
     {
         public User GetDummyUser(string username)
         {
-            return new User(username, "testPassword", "testEmail@email.com", "testAlternate@email.com", 0, "FacebookId", new UserType(10));
+            WebOperationContext ctx = WebOperationContext.Current;
+            if (IsRequestAuthentic(ctx))
+            {
+                SetResponseAuthentication(ctx);
+                return new User(username, "testPassword", "testEmail@email.com", "testAlternate@email.com", 0, "FacebookId", new UserType(10));
+            }
+            else //TODO: Should return an invalid response packet
+                return null;
         }
 
-        public Response GetDummyUser2(int userId)
+        #region HelperMethods
+
+        public void SetResponseAuthentication(WebOperationContext context)
         {
-            return new Response() { UserId = userId, Username = "shishir" };
+            context.OutgoingResponse.Headers.Add("X-Client-Unique-Id", "");
+            context.OutgoingResponse.Headers.Add("X-Session-Token", "");
+            context.OutgoingResponse.Headers.Add("X-User-Id", "");
         }
+
+        public bool IsRequestAuthentic(WebOperationContext context)
+        {
+            if (context.IncomingRequest.Headers.AllKeys.Contains("X-Client-Unique-Id"))
+                return true;
+            return false;
+        }
+
+        #endregion
     }
 }
