@@ -33,5 +33,7 @@ namespace eComBid.API.DAL
         public System.DateTime DateModified { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public string AvatarURL { get; set; }
+        public Nullable<bool> IsBuyer { get; set; }
     }
 }

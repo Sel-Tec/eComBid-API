@@ -3,6 +3,12 @@ using System.Runtime.Serialization;
 
 namespace eComBid.API.Domain
 {
+    /// <summary>
+    /// Domain Base class has the common properties of all the members
+    /// Usage of Id
+    /// Id  =   -1      : Specifies error when retrieving the object       
+    /// Id  =   0       : New object and/or state not saved
+    /// </summary>
     [DataContract]
     public class DomainBase
     {

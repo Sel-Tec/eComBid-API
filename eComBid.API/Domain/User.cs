@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using eComBid.API.Utility;
 
 namespace eComBid.API.Domain
 {
@@ -38,39 +39,67 @@ namespace eComBid.API.Domain
         [DataMember]
         public string Password { private get; set; }
         [DataMember]
-        public bool IsAuthenticated { get; set; }
-        [DataMember]
         public string Email { get; set; }
+        [DataMember]
+        public new string Name { get { return FirstName + ' ' + LastName; }  private set { }  }
+        [DataMember]
+        public string FirstName { get; set; }
+        [DataMember]
+        public string LastName { get; set; }
+        [DataMember]
+        public string AlternateEmail { get; set; }
+        [DataMember]
+        public string Phone { get; set; }
+        [DataMember]
+        public string SecondaryPhone { get; set; }
+        [DataMember]
+        public UserType UType;
+        [DataMember]
+        public Address Addr;
+        [DataMember]
+        public DateTime? DOB { get; set; }
         [DataMember]
         public int SocialMediaSourceId { get; set; }
         [DataMember]
         public string SocialMediaId { get; set; }
+        private string _avatarURL;
         [DataMember]
-        public string Phone { get; set; }
+        public string AvatarURL { get { return ConfigMember.ImageURL + _avatarURL; } set { _avatarURL = value; } }
         [DataMember]
-        public UserType UType;
-        
+        public bool? IsBuyer { get; set; }
+        [DataMember]
+        public bool IsAuthenticated { get; set; }
+
         #endregion
 
         #region constructors
 
         public User() : base()
         {
-            this.Id = -1;
+            this.Id = 0;
             this.IsAuthenticated = false;
             this.Username = "Guest";
             this.UType = new UserType();
         }
 
-        public User(int id) : base()
+        public User(int id) : this()
         {
             User u = User.GetById(id);
             this.Id = u.Id;
             this.Username = u.Username;
             this.Email = u.Email;
+            this.FirstName = u.FirstName;
+            this.LastName = u.LastName;
+            this.AlternateEmail = u.AlternateEmail;
+            this.Phone = u.Phone;
+            this.SecondaryPhone = u.SecondaryPhone;
+            this.UType = u.UType;
+            this.Addr = u.Addr;
+            this.DOB = u.DOB;
             this.SocialMediaSourceId = u.SocialMediaSourceId;
             this.SocialMediaId = u.SocialMediaId;
-            this.Phone = u.Phone;
+            this._avatarURL = u._avatarURL;
+            this.IsBuyer = u.IsBuyer;
             this.DateAdded = u.DateAdded;
             this.DateModified = u.DateModified;
             this.IsActive = u.IsActive;
@@ -78,14 +107,23 @@ namespace eComBid.API.Domain
             this.IsAuthenticated = this.Id > 0 ? true : false;
         }
 
-        public User(User u) : base()
+        public User(User u) : this()
         {
             this.Id = u.Id;
             this.Username = u.Username;
             this.Email = u.Email;
+            this.FirstName = u.FirstName;
+            this.LastName = u.LastName;
+            this.AlternateEmail = u.AlternateEmail;
+            this.Phone = u.Phone;
+            this.SecondaryPhone = u.SecondaryPhone;
+            this.UType = u.UType;
+            this.Addr = u.Addr;
+            this.DOB = u.DOB;
             this.SocialMediaSourceId = u.SocialMediaSourceId;
             this.SocialMediaId = u.SocialMediaId;
-            this.Phone = u.Phone;
+            this._avatarURL = u._avatarURL;
+            this.IsBuyer = u.IsBuyer;
             this.DateAdded = u.DateAdded;
             this.DateModified = u.DateModified;
             this.IsActive = u.IsActive;
@@ -93,29 +131,49 @@ namespace eComBid.API.Domain
             this.IsAuthenticated = this.Id > 0 ? true : false;
         }
 
-        //public User(DAL.User u) : base()
-        //{
-        //    this.Id = u.Id;
-        //    this.Username = u.Username;
-        //    this.Email = u.Email;
-        //    this.SocialMediaSourceId = Convert.ToInt32(u.SocialMediaSourceId);
-        //    this.SocialMediaId = u.SocialMediaUsername;
-        //    this.Phone = u.Phone;
-        //    this.DateAdded = u.DateAdded;
-        //    this.DateModified = u.DateModified;
-        //    this.IsActive = u.IsActive;
+        public User(DAL.User u) : this()
+        {
+            this.Id = u.Id;
+            this.Username = u.Username;
+            this.Email = u.Email;
+            this.FirstName = u.FirstName;
+            this.LastName = u.LastName;
+            this.AlternateEmail = u.AlternateEmail;
+            this.Phone = u.Phone;
+            this.SecondaryPhone = u.SecondaryPhone;
+            this.UType = new UserType(u.UserType.HasValue ? u.UserType.Value: 0);
+            this.Addr = new Address(u.AddressId.HasValue ? u.AddressId.Value : 0);
+            this.DOB = u.DOB;
+            this.SocialMediaSourceId = u.SocialMediaSourceId.HasValue ? u.SocialMediaSourceId.Value : 0;
+            this.SocialMediaId = u.SocialMediaId;
+            this._avatarURL = u.AvatarURL;
+            this.IsBuyer = u.IsBuyer;
+            this.DateAdded = u.DateAdded;
+            this.DateModified = u.DateModified;
+            this.IsActive = u.IsActive;
 
-        //    this.IsAuthenticated = this.Id > 0 ? true : false;
-        //}
+            this.IsAuthenticated = this.Id > 0 ? true : false;
+        }
 
-        public User(string username, string password, string email, string alternateEmail, int socialMediaSourceId, string socialMediaId, UserType uType) : base()
+        public User(string username, string password, string email, string firstName, string lastName, string alternateEmail, string phone, string secondaryPhone
+                        , UserType uType, Address addr, DateTime? dob, int? socialMediaSourceId, string socialMediaId, string avatarURL, bool isBuyer) : this()
         {
             this.Id = 0;
             this.Username = username;
             this.Password = password;
             this.Email = email;
-            this.SocialMediaSourceId = socialMediaSourceId;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.AlternateEmail = alternateEmail;
+            this.Phone = phone;
+            this.SecondaryPhone = secondaryPhone;
+            this.UType = uType;
+            this.Addr = addr;
+            this.DOB = dob;
+            this.SocialMediaSourceId = socialMediaSourceId.HasValue ? socialMediaSourceId.Value : 0;
             this.SocialMediaId = socialMediaId;
+            this._avatarURL = avatarURL;
+            this.IsBuyer = isBuyer;
         }
 
         #endregion
@@ -124,17 +182,17 @@ namespace eComBid.API.Domain
 
         public static User GetById(int id)
         {
-            //DAL.User userObj;
+            DAL.User userObj;
 
-            //using(DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //{
-            //    userObj = context.Users.Where(p => p.Id == id).FirstOrDefault();
-            //}
-            //if (userObj != null)
-            //{
-            //    User u = new User(userObj);
-            //    return u;
-            //}
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                userObj = context.Users.Where(p => p.Id == id && p.IsDeleted == false).FirstOrDefault();
+            }
+            if (userObj != null)
+            {
+                User u = new User(userObj);
+                return u;
+            }
             return new User();
         }
 
@@ -159,32 +217,37 @@ namespace eComBid.API.Domain
             //Check if all the objects in User's object is saved
             int result = -1;
 
-            //if (Validate())
-            //{
-            //    this.P.Id = this.P.Save();
+            this.Addr.Save();
 
-            //    using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //    {
-            //        result = Convert.ToInt32(context.InsertUpdateUser(this.Id, this.Username, this.Password, this.P.Id, this.Email, this.Phone, this.SocialMediaSourceId, this.SocialMediaId).FirstOrDefault());
-            //        if (result > 0)
-            //            this.Id = result;
-            //    }
-            //}
+            if (Validate())
+            {
+                using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+                {
+                    result = Convert.ToInt32(context.InsertUpdateUser(this.Id, this.Username, this.Password, this.Email, this.Name, this.FirstName, this.LastName, this.AlternateEmail, this.Phone, this.SecondaryPhone
+                                                                        , this.UType.Id, this.Addr.Id, this.DOB, this.SocialMediaSourceId, this.SocialMediaId, this._avatarURL, this.IsBuyer).FirstOrDefault());
+                    if (result > 0)
+                        this.Id = result;
+                }
+            }
             return result;
         }
 
         internal static int Save(User u)
         {
             int result = -1;
-            //if (Validate(u))
-            //{
-            //    using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //    {
-            //        result = Convert.ToInt32(context.InsertUpdateUser(u.Id, u.Username, u.Password, u.P.Id, u.Email, u.Phone, u.SocialMediaSourceId, u.SocialMediaId).FirstOrDefault());
-            //        if (result > 0)
-            //            u.Id = result;
-            //    }
-            //}
+
+            u.Addr.Save();
+
+            if (Validate(u))
+            {
+                using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+                {
+                    result = Convert.ToInt32(context.InsertUpdateUser(u.Id, u.Username, u.Password, u.Email, u.Name, u.FirstName, u.LastName, u.AlternateEmail, u.Phone, u.SecondaryPhone
+                                                                        , u.UType.Id, u.Addr.Id, u.DOB, u.SocialMediaSourceId, u.SocialMediaId, u._avatarURL, u.IsBuyer).FirstOrDefault());
+                    if (result > 0)
+                        u.Id = result;
+                }
+            }
             return result;
         }
 
@@ -193,12 +256,12 @@ namespace eComBid.API.Domain
             int result = -1;
             if (this.Id <= 0) return false;
 
-            //using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //{
-            //    result = context.DeleteUserById(this.Id);
-            //    if (result > 0)
-            //        this.Id = result;
-            //}
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                result = context.DeleteUserById(this.Id);
+                if (result > 0)
+                    this.Id = result;
+            }
             return result > 0 ? true : false ;
         }
 
@@ -207,12 +270,12 @@ namespace eComBid.API.Domain
             int result = -1;
             if (id <= 0) return false;
 
-            //using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //{
-            //    result = context.DeleteUserById(id);
-            //    if (result > 0)
-            //        id = result;
-            //}
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                result = context.DeleteUserById(id);
+                if (result > 0)
+                    id = result;
+            }
             return result > 0 ? true : false;
         }
 

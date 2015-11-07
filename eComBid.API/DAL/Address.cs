@@ -22,6 +22,8 @@ namespace eComBid.API.DAL
         public string State { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
+        public Nullable<bool> IsBillingAddress { get; set; }
+        public Nullable<bool> IsShippingAddress { get; set; }
         public System.DateTime DateAdded { get; set; }
         public System.DateTime DateModified { get; set; }
         public bool IsActive { get; set; }

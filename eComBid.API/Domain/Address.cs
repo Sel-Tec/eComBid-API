@@ -26,13 +26,13 @@ namespace eComBid.API.Domain
         #endregion
 
         #region constructors
-        public Address()
+        public Address() : base()
         {
             this.IsBillingAddress = true;
             this.IsShippingAddress = true;
         }
 
-        public Address(int id) : base()
+        public Address(int id) : this()
         {
             Address addr = Address.GetById(id);
             this.Id = addr.Id;
@@ -46,7 +46,7 @@ namespace eComBid.API.Domain
             this.IsShippingAddress = addr.IsShippingAddress;
         }
 
-        public Address(string addressLine1, string addressLine2, string city, string state, string country, string zip) : base()
+        public Address(string addressLine1, string addressLine2, string city, string state, string country, string zip) : this()
         {
             this.Id = 0;
             this.AddressLine1 = addressLine1;
@@ -57,34 +57,34 @@ namespace eComBid.API.Domain
             this.ZipCode = zip;
         }
 
-        //public Address(DAL.Address addr) : base()
-        //{
-        //    this.Id = addr.Id;
-        //    this.AddressLine1 = addr.AddressLine1;
-        //    this.AddressLine2 = addr.AddressLine2;
-        //    this.City = addr.City;
-        //    this.State = addr.State;
-        //    this.Country = addr.Country;
-        //    this.ZipCode = addr.ZipCode;
-        //    this.IsBillingAddress = addr.IsBillingAddress.HasValue ? addr.IsBillingAddress.Value : true ;
-        //    this.IsShippingAddress = addr.IsShippingAddress.HasValue ? addr.IsShippingAddress.Value : true ;
-        //}
+        public Address(DAL.Address addr) : this()
+        {
+            this.Id = addr.Id;
+            this.AddressLine1 = addr.AddressLine1;
+            this.AddressLine2 = addr.AddressLine2;
+            this.City = addr.City;
+            this.State = addr.State;
+            this.Country = addr.Country;
+            this.ZipCode = addr.ZipCode;
+            this.IsBillingAddress = addr.IsBillingAddress.HasValue ? addr.IsBillingAddress.Value : true;
+            this.IsShippingAddress = addr.IsShippingAddress.HasValue ? addr.IsShippingAddress.Value : true;
+        }
         #endregion
 
         #region methods
 
         public static Address GetById(int id)
         {
-            //DAL.Address addressObj;
-            //using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //{
-            //    addressObj = context.Addresses.Where(p => p.Id == id).FirstOrDefault();
-            //}
-            //if (addressObj != null)
-            //{
-            //    Address addr = new Address(addressObj);
-            //    return addr;
-            //}
+            DAL.Address addressObj;
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                addressObj = context.Addresses.Where(a => a.Id == id && a.IsDeleted == false).FirstOrDefault();
+            }
+            if (addressObj != null)
+            {
+                Address addr = new Address(addressObj);
+                return addr;
+            }
             return new Address();
         }
 
@@ -106,47 +106,47 @@ namespace eComBid.API.Domain
 
         internal int Save()
         {
-            int result = -1;
+            int result = 0;
 
-            //if (Validate())
-            //{
-            //    using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //    {
-            //        result = Convert.ToInt32(context.InsertUpdateAddress(this.Id, this.AddressLine1, this.AddressLine2, this.City, this.State, this.Country, this.IsBillingAddress, this.IsShippingAddress, this.ZipCode).FirstOrDefault());
-            //        if (result > 0)
-            //            this.Id = result;
-            //    }
-            //}
+            if (Validate())
+            {
+                using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+                {
+                    result = Convert.ToInt32(context.InsertUpdateAddress(this.Id, this.AddressLine1, this.AddressLine2, this.City, this.State, this.Country, this.ZipCode, this.IsBillingAddress, this.IsShippingAddress).FirstOrDefault());
+                    if (result > 0)
+                        this.Id = result;
+                }
+            }
             return result;
         }
 
         internal static int Save(Address addr)
         {
-            int result = -1;
+            int result = 0;
 
-            //if (Validate(addr))
-            //{
-            //    using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //    {
-            //        result = Convert.ToInt32(context.InsertUpdateAddress(addr.Id, addr.AddressLine1, addr.AddressLine2, addr.City, addr.State, addr.Country, addr.IsBillingAddress, addr.IsShippingAddress, addr.ZipCode).FirstOrDefault());
-            //        if (result > 0)
-            //            addr.Id = result;
-            //    }
-            //}
+            if (Validate(addr))
+            {
+                using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+                {
+                    result = Convert.ToInt32(context.InsertUpdateAddress(addr.Id, addr.AddressLine1, addr.AddressLine2, addr.City, addr.State, addr.Country, addr.ZipCode, addr.IsBillingAddress, addr.IsShippingAddress).FirstOrDefault());
+                    if (result > 0)
+                        addr.Id = result;
+                }
+            }
             return result;
         }
 
         internal bool Delete()
         {
             int result = -1;
-            //if (this.Id <= 0) return false;
+            if (this.Id <= 0) return false;
 
-            //using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //{
-            //    result = context.DeleteAddressById(this.Id);
-            //    if (result > 0)
-            //        this.Id = result;
-            //}
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                result = context.DeleteAddressById(this.Id);
+                if (result > 0)
+                    this.Id = result;
+            }
             return result > 0 ? true : false;
         }
 
@@ -155,12 +155,12 @@ namespace eComBid.API.Domain
             int result = -1;
             if (id <= 0) return false;
 
-            //using (DAL.Pet2ShareEntities context = new DAL.Pet2ShareEntities())
-            //{
-            //    result = context.DeleteAddressById(id);
-            //    if (result > 0)
-            //        id = result;
-            //}
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                result = context.DeleteAddressById(id);
+                if (result > 0)
+                    id = result;
+            }
             return result > 0 ? true : false;
         }
 

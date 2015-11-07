@@ -12,6 +12,8 @@ namespace eComBid.API.DAL
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class CentralDBEntities : DbContext
     {
@@ -25,10 +27,159 @@ namespace eComBid.API.DAL
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<SocialMediaSource> SocialMediaSources { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<AuthenticationToken> AuthenticationTokens { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+    
+        public virtual ObjectResult<Nullable<int>> UserLogin(string username, string password, Nullable<bool> isBuyer)
+        {
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var passwordParameter = password != null ?
+                new ObjectParameter("Password", password) :
+                new ObjectParameter("Password", typeof(string));
+    
+            var isBuyerParameter = isBuyer.HasValue ?
+                new ObjectParameter("IsBuyer", isBuyer) :
+                new ObjectParameter("IsBuyer", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("UserLogin", usernameParameter, passwordParameter, isBuyerParameter);
+        }
+    
+        public virtual int DeleteUserById(Nullable<int> id)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteUserById", idParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<decimal>> InsertUpdateUser(Nullable<int> id, string username, string password, string email, string name, string firstName, string lastName, string alternateEmail, string phone, string secondaryPhone, Nullable<int> userType, Nullable<int> addressId, Nullable<System.DateTime> dOB, Nullable<int> socialMediaSourceId, string socialMediaId, string avatarURL, Nullable<bool> isBuyer)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(int));
+    
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var passwordParameter = password != null ?
+                new ObjectParameter("Password", password) :
+                new ObjectParameter("Password", typeof(string));
+    
+            var emailParameter = email != null ?
+                new ObjectParameter("Email", email) :
+                new ObjectParameter("Email", typeof(string));
+    
+            var nameParameter = name != null ?
+                new ObjectParameter("Name", name) :
+                new ObjectParameter("Name", typeof(string));
+    
+            var firstNameParameter = firstName != null ?
+                new ObjectParameter("FirstName", firstName) :
+                new ObjectParameter("FirstName", typeof(string));
+    
+            var lastNameParameter = lastName != null ?
+                new ObjectParameter("LastName", lastName) :
+                new ObjectParameter("LastName", typeof(string));
+    
+            var alternateEmailParameter = alternateEmail != null ?
+                new ObjectParameter("AlternateEmail", alternateEmail) :
+                new ObjectParameter("AlternateEmail", typeof(string));
+    
+            var phoneParameter = phone != null ?
+                new ObjectParameter("Phone", phone) :
+                new ObjectParameter("Phone", typeof(string));
+    
+            var secondaryPhoneParameter = secondaryPhone != null ?
+                new ObjectParameter("SecondaryPhone", secondaryPhone) :
+                new ObjectParameter("SecondaryPhone", typeof(string));
+    
+            var userTypeParameter = userType.HasValue ?
+                new ObjectParameter("UserType", userType) :
+                new ObjectParameter("UserType", typeof(int));
+    
+            var addressIdParameter = addressId.HasValue ?
+                new ObjectParameter("AddressId", addressId) :
+                new ObjectParameter("AddressId", typeof(int));
+    
+            var dOBParameter = dOB.HasValue ?
+                new ObjectParameter("DOB", dOB) :
+                new ObjectParameter("DOB", typeof(System.DateTime));
+    
+            var socialMediaSourceIdParameter = socialMediaSourceId.HasValue ?
+                new ObjectParameter("SocialMediaSourceId", socialMediaSourceId) :
+                new ObjectParameter("SocialMediaSourceId", typeof(int));
+    
+            var socialMediaIdParameter = socialMediaId != null ?
+                new ObjectParameter("SocialMediaId", socialMediaId) :
+                new ObjectParameter("SocialMediaId", typeof(string));
+    
+            var avatarURLParameter = avatarURL != null ?
+                new ObjectParameter("AvatarURL", avatarURL) :
+                new ObjectParameter("AvatarURL", typeof(string));
+    
+            var isBuyerParameter = isBuyer.HasValue ?
+                new ObjectParameter("IsBuyer", isBuyer) :
+                new ObjectParameter("IsBuyer", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("InsertUpdateUser", idParameter, usernameParameter, passwordParameter, emailParameter, nameParameter, firstNameParameter, lastNameParameter, alternateEmailParameter, phoneParameter, secondaryPhoneParameter, userTypeParameter, addressIdParameter, dOBParameter, socialMediaSourceIdParameter, socialMediaIdParameter, avatarURLParameter, isBuyerParameter);
+        }
+    
+        public virtual int DeleteAddressById(Nullable<int> id)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteAddressById", idParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<decimal>> InsertUpdateAddress(Nullable<int> id, string addressLine1, string addressLine2, string city, string state, string country, string zipCode, Nullable<bool> isBillingAddress, Nullable<bool> isShippingAddress)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(int));
+    
+            var addressLine1Parameter = addressLine1 != null ?
+                new ObjectParameter("AddressLine1", addressLine1) :
+                new ObjectParameter("AddressLine1", typeof(string));
+    
+            var addressLine2Parameter = addressLine2 != null ?
+                new ObjectParameter("AddressLine2", addressLine2) :
+                new ObjectParameter("AddressLine2", typeof(string));
+    
+            var cityParameter = city != null ?
+                new ObjectParameter("City", city) :
+                new ObjectParameter("City", typeof(string));
+    
+            var stateParameter = state != null ?
+                new ObjectParameter("State", state) :
+                new ObjectParameter("State", typeof(string));
+    
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            var zipCodeParameter = zipCode != null ?
+                new ObjectParameter("ZipCode", zipCode) :
+                new ObjectParameter("ZipCode", typeof(string));
+    
+            var isBillingAddressParameter = isBillingAddress.HasValue ?
+                new ObjectParameter("IsBillingAddress", isBillingAddress) :
+                new ObjectParameter("IsBillingAddress", typeof(bool));
+    
+            var isShippingAddressParameter = isShippingAddress.HasValue ?
+                new ObjectParameter("IsShippingAddress", isShippingAddress) :
+                new ObjectParameter("IsShippingAddress", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("InsertUpdateAddress", idParameter, addressLine1Parameter, addressLine2Parameter, cityParameter, stateParameter, countryParameter, zipCodeParameter, isBillingAddressParameter, isShippingAddressParameter);
+        }
     }
 }

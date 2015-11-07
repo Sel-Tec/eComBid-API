@@ -8,6 +8,7 @@ using System.Text;
 
 using eComBid.API.Domain;
 using System.ServiceModel.Channels;
+using eComBid.API.Security;
 
 namespace eComBid.Service
 {
@@ -19,18 +20,20 @@ namespace eComBid.Service
             if (IsRequestAuthentic(ctx))
             {
                 SetResponseAuthentication(ctx);
-                return new User(username, "testPassword", "testEmail@email.com", "testAlternate@email.com", 0, "FacebookId", new UserType(10));
+                return new User(username, "testPassword", "testEmail@email.com", null, null, "testAlternate@email.com", null, null, null, null, null, null, null, null, true);
             }
             else //TODO: Should return an invalid response packet
                 return null;
         }
 
-        #region HelperMethods
+        #region HelperMethods - HTTPHeader
 
         public void SetResponseAuthentication(WebOperationContext context)
         {
+            Authentication auth = new Authentication(0);
+
             context.OutgoingResponse.Headers.Add("X-Client-Unique-Id", "");
-            context.OutgoingResponse.Headers.Add("X-Session-Token", "");
+            context.OutgoingResponse.Headers.Add("X-Auth-Status", "");
             context.OutgoingResponse.Headers.Add("X-User-Id", "");
         }
 
