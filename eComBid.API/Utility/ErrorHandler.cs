@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace eComBid.API.Utility
@@ -9,7 +10,8 @@ namespace eComBid.API.Utility
     //  10XX            Error Codes specific to the DB
     //  20XX            Error Codes specific to the API
     //  30XX            Error Codes specific to the WebService
-    //  40XX 
+    //  50XX            Business Logic error
+
     
     [DataContract]
     public class ErrorHandler
@@ -24,24 +26,28 @@ namespace eComBid.API.Utility
 
         private ErrorHandler()
         {
-
+            ErrorCode = 999;
+            ErrorDescription = "Undefined Error";
+            FriendlyMessage = "Error Occurred: Programmers on their way!";
         }
 
-        public ErrorHandler(int errorCode)
+        public ErrorHandler(int errorCode) : this()
         {
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                DAL.ECBError error = context.ECBErrors.Where(e => e.ErrorCode == errorCode).FirstOrDefault();
 
+                this.ErrorCode = error.ErrorCode;
+                this.ErrorDescription = error.Description;
+                this.FriendlyMessage = error.FriendlyMessage;
+            }
         }
 
-        public ErrorHandler(int errorCode, Exception internalException)
+        public ErrorHandler(int errorCode, Exception internalException) : this(errorCode)
         {
-
+            this.IntenralException = internalException;
         }
 
-        public static ErrorHandler GetById(int errorCode)
-        {
-            ErrorHandler errHandler = new ErrorHandler();
 
-            return;
-        }
     }
 }

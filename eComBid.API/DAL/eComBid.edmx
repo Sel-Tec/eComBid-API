@@ -38,6 +38,14 @@
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="ECBError">
+          <Key>
+            <PropertyRef Name="ErrorCode" />
+          </Key>
+          <Property Name="ErrorCode" Type="int" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="FriendlyMessage" Type="varchar" MaxLength="1000" />
+        </EntityType>
         <EntityType Name="SocialMediaSource">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,6 +140,7 @@
         <EntityContainer Name="eComBidCentralDBModelStoreContainer">
           <EntitySet Name="Address" EntityType="Self.Address" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuthenticationToken" EntityType="Self.AuthenticationToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ECBError" EntityType="Self.ECBError" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SocialMediaSource" EntityType="Self.SocialMediaSource" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
@@ -237,6 +246,7 @@
             <Parameter Name="IsShippingAddress" Mode="In" Type="Boolean" />
           </FunctionImport>
           <EntitySet Name="Addresses" EntityType="eComBid.CentralDBModel.Address" />
+          <EntitySet Name="ECBErrors" EntityType="eComBid.CentralDBModel.ECBError" />
         </EntityContainer>
         <EntityType Name="AuthenticationToken">
           <Key>
@@ -270,6 +280,14 @@
           <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ECBError">
+          <Key>
+            <PropertyRef Name="ErrorCode" />
+          </Key>
+          <Property Name="ErrorCode" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="FriendlyMessage" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -367,6 +385,15 @@
                 <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ECBErrors">
+            <EntityTypeMapping TypeName="eComBid.CentralDBModel.ECBError">
+              <MappingFragment StoreEntitySet="ECBError">
+                <ScalarProperty Name="FriendlyMessage" ColumnName="FriendlyMessage" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

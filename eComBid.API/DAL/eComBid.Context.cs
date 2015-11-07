@@ -32,6 +32,7 @@ namespace eComBid.API.DAL
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<AuthenticationToken> AuthenticationTokens { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<ECBError> ECBErrors { get; set; }
     
         public virtual ObjectResult<Nullable<int>> UserLogin(string username, string password, Nullable<bool> isBuyer)
         {
