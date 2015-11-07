@@ -1,23 +1,47 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace eComBid.API.Utility
 {
+
+    //Define error codes types and their descripion
+    //  Error Code      Description
+    //  10XX            Error Codes specific to the DB
+    //  20XX            Error Codes specific to the API
+    //  30XX            Error Codes specific to the WebService
+    //  40XX 
+    
+    [DataContract]
     public class ErrorHandler
     {
-        //Define error codes and their descripion
-        //  Error Code      Description
-        //  100             
-        //
-
+        [DataMember]
         public int ErrorCode { get; set; }
-        public string ErrorDescription { get; set; }
+        [DataMember]
+        public string ErrorDescription { get; private set; }
+        [DataMember]
+        public string FriendlyMessage { get; private set; }
         public Exception IntenralException { get; set; }
 
-
-        //This has a table of 
-        public static string GetDescription(int errorCode)
+        private ErrorHandler()
         {
-            return "";
+
+        }
+
+        public ErrorHandler(int errorCode)
+        {
+
+        }
+
+        public ErrorHandler(int errorCode, Exception internalException)
+        {
+
+        }
+
+        public static ErrorHandler GetById(int errorCode)
+        {
+            ErrorHandler errHandler = new ErrorHandler();
+
+            return;
         }
     }
 }

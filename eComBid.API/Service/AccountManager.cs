@@ -76,12 +76,12 @@ namespace eComBid.API.Service
             return u;
         }
 
-        public static bool IsExistingUser(string username)
+        public static bool IsExistingUser(string email)
         {
             int count = 0;
             using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
             {
-                count = context.Users.Where(u => u.Username == username).Count();
+                count = context.Users.Where(u => u.Email == email).Count();
             }
 
             if (count > 0)
