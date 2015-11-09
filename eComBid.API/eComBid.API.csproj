@@ -111,7 +111,6 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="DAL\eComBid.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

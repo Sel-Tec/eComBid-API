@@ -14,8 +14,13 @@ namespace eComBid.API.DAL
     
     public partial class Address
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Address()
+        {
+            this.Users = new HashSet<User>();
+        }
+    
         public int Id { get; set; }
-        public string Name { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }
@@ -28,5 +33,8 @@ namespace eComBid.API.DAL
         public System.DateTime DateModified { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Users { get; set; }
     }
 }

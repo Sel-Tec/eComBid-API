@@ -10,7 +10,6 @@ namespace eComBid.API.Domain
     [DataContract]
     public class SocialMediaSource : DomainBase
     {
-        [DataMember]
-        public string Name { get; set; }
+
     }
 }

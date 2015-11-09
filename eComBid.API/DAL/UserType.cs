@@ -14,6 +14,12 @@ namespace eComBid.API.DAL
     
     public partial class UserType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public UserType()
+        {
+            this.Users = new HashSet<User>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -21,5 +27,8 @@ namespace eComBid.API.DAL
         public System.DateTime DateModified { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Users { get; set; }
     }
 }

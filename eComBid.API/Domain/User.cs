@@ -141,7 +141,7 @@ namespace eComBid.API.Domain
             this.AlternateEmail = u.AlternateEmail;
             this.Phone = u.Phone;
             this.SecondaryPhone = u.SecondaryPhone;
-            this.UType = new UserType(u.UserType.HasValue ? u.UserType.Value: 0);
+            this.UType = new UserType(u.UserTypeId.HasValue ? u.UserTypeId.Value: 0);
             this.Addr = new Address(u.AddressId.HasValue ? u.AddressId.Value : 0);
             this.DOB = u.DOB;
             this.SocialMediaSourceId = u.SocialMediaSourceId.HasValue ? u.SocialMediaSourceId.Value : 0;

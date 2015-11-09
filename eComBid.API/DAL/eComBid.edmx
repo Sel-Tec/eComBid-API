@@ -10,7 +10,6 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="AddressLine1" Type="varchar" MaxLength="100" />
           <Property Name="AddressLine2" Type="varchar" MaxLength="100" />
           <Property Name="City" Type="varchar" MaxLength="50" />
@@ -72,7 +71,7 @@
           <Property Name="AlternateEmail" Type="varchar" MaxLength="100" />
           <Property Name="Phone" Type="varchar" MaxLength="20" />
           <Property Name="SecondaryPhone" Type="varchar" MaxLength="20" />
-          <Property Name="UserType" Type="int" />
+          <Property Name="UserTypeId" Type="int" />
           <Property Name="AddressId" Type="int" />
           <Property Name="DOB" Type="datetime" />
           <Property Name="SocialMediaSourceId" Type="int" />
@@ -96,6 +95,30 @@
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
+        <Association Name="FK_User_Address">
+          <End Role="Address" Type="Self.Address" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_UserType">
+          <End Role="UserType" Type="Self.UserType" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="DeleteAddressById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Id" Type="int" Mode="In" />
         </Function>
@@ -144,11 +167,41 @@
           <EntitySet Name="SocialMediaSource" EntityType="Self.SocialMediaSource" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_User_Address" Association="Self.FK_User_Address">
+            <End Role="Address" EntitySet="Address" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_UserType" Association="Self.FK_User_UserType">
+            <End Role="UserType" EntitySet="UserType" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="eComBid.CentralDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AuthenticationToken">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="DeviceId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AuthToken" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ECBError">
+          <Key>
+            <PropertyRef Name="ErrorCode" />
+          </Key>
+          <Property Name="ErrorCode" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FriendlyMessage" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="SocialMediaSource">
           <Key>
             <PropertyRef Name="Id" />
@@ -161,56 +214,26 @@
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="Binary" MaxLength="100" FixedLength="false" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AlternateEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="SecondaryPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="UserType" Type="Int32" />
-          <Property Name="AddressId" Type="Int32" />
-          <Property Name="DOB" Type="DateTime" Precision="3" />
-          <Property Name="SocialMediaSourceId" Type="Int32" />
-          <Property Name="SocialMediaId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="AvatarURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="IsBuyer" Type="Boolean" />
-        </EntityType>
-        <EntityType Name="UserType">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-        </EntityType>
         <EntityContainer Name="CentralDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AuthenticationTokens" EntityType="Self.AuthenticationToken" />
+          <EntitySet Name="ECBErrors" EntityType="Self.ECBError" />
           <EntitySet Name="SocialMediaSources" EntityType="Self.SocialMediaSource" />
-          <EntitySet Name="Users" EntityType="Self.User" />
-          <EntitySet Name="UserTypes" EntityType="Self.UserType" />
-          <EntitySet Name="AuthenticationTokens" EntityType="eComBid.CentralDBModel.AuthenticationToken" />
-          <FunctionImport Name="UserLogin" ReturnType="Collection(Int32)">
-            <Parameter Name="Username" Mode="In" Type="String" />
-            <Parameter Name="Password" Mode="In" Type="String" />
-            <Parameter Name="IsBuyer" Mode="In" Type="Boolean" />
+          <FunctionImport Name="DeleteAddressById">
+          <Parameter Name="Id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="DeleteUserById">
           <Parameter Name="Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="InsertUpdateAddress" ReturnType="Collection(Decimal)">
+            <Parameter Name="Id" Mode="In" Type="Int32" />
+            <Parameter Name="AddressLine1" Mode="In" Type="String" />
+            <Parameter Name="AddressLine2" Mode="In" Type="String" />
+            <Parameter Name="City" Mode="In" Type="String" />
+            <Parameter Name="State" Mode="In" Type="String" />
+            <Parameter Name="Country" Mode="In" Type="String" />
+            <Parameter Name="ZipCode" Mode="In" Type="String" />
+            <Parameter Name="IsBillingAddress" Mode="In" Type="Boolean" />
+            <Parameter Name="IsShippingAddress" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="InsertUpdateUser" ReturnType="Collection(Decimal)">
             <Parameter Name="Id" Mode="In" Type="Int32" />
@@ -231,43 +254,28 @@
             <Parameter Name="AvatarURL" Mode="In" Type="String" />
             <Parameter Name="IsBuyer" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="DeleteAddressById">
-          <Parameter Name="Id" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="InsertUpdateAddress" ReturnType="Collection(Decimal)">
-            <Parameter Name="Id" Mode="In" Type="Int32" />
-            <Parameter Name="AddressLine1" Mode="In" Type="String" />
-            <Parameter Name="AddressLine2" Mode="In" Type="String" />
-            <Parameter Name="City" Mode="In" Type="String" />
-            <Parameter Name="State" Mode="In" Type="String" />
-            <Parameter Name="Country" Mode="In" Type="String" />
-            <Parameter Name="ZipCode" Mode="In" Type="String" />
-            <Parameter Name="IsBillingAddress" Mode="In" Type="Boolean" />
-            <Parameter Name="IsShippingAddress" Mode="In" Type="Boolean" />
+          <FunctionImport Name="UserLogin" ReturnType="Collection(Int32)">
+            <Parameter Name="Username" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="IsBuyer" Mode="In" Type="Boolean" />
           </FunctionImport>
           <EntitySet Name="Addresses" EntityType="eComBid.CentralDBModel.Address" />
-          <EntitySet Name="ECBErrors" EntityType="eComBid.CentralDBModel.ECBError" />
+          <EntitySet Name="Users" EntityType="eComBid.CentralDBModel.User" />
+          <EntitySet Name="UserTypes" EntityType="eComBid.CentralDBModel.UserType" />
+          <AssociationSet Name="FK_User_Address" Association="eComBid.CentralDBModel.FK_User_Address">
+            <End Role="Address" EntitySet="Addresses" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_UserType" Association="eComBid.CentralDBModel.FK_User_UserType">
+            <End Role="UserType" EntitySet="UserTypes" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="AuthenticationToken">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="DeviceId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="AuthToken" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-        </EntityType>
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="AddressLine1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="AddressLine2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -280,21 +288,103 @@
           <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="eComBid.CentralDBModel.FK_User_Address" FromRole="Address" ToRole="User" />
         </EntityType>
-        <EntityType Name="ECBError">
+        <EntityType Name="User">
           <Key>
-            <PropertyRef Name="ErrorCode" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ErrorCode" Type="Int32" Nullable="false" />
-          <Property Name="Description" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="FriendlyMessage" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="Binary" Nullable="false" MaxLength="100" FixedLength="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AlternateEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SecondaryPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UserTypeId" Type="Int32" />
+          <Property Name="AddressId" Type="Int32" />
+          <Property Name="DOB" Type="DateTime" Precision="3" />
+          <Property Name="SocialMediaSourceId" Type="Int32" />
+          <Property Name="SocialMediaId" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="AvatarURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="IsBuyer" Type="Boolean" />
+          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Address" Relationship="eComBid.CentralDBModel.FK_User_Address" FromRole="User" ToRole="Address" />
+          <NavigationProperty Name="UserType" Relationship="eComBid.CentralDBModel.FK_User_UserType" FromRole="User" ToRole="UserType" />
         </EntityType>
+        <EntityType Name="UserType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="DateAdded" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DateModified" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="eComBid.CentralDBModel.FK_User_UserType" FromRole="UserType" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_User_Address">
+          <End Type="eComBid.CentralDBModel.Address" Role="Address" Multiplicity="0..1" />
+          <End Type="eComBid.CentralDBModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_User_UserType">
+          <End Type="eComBid.CentralDBModel.UserType" Role="UserType" Multiplicity="0..1" />
+          <End Type="eComBid.CentralDBModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserType">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="eComBidCentralDBModelStoreContainer" CdmEntityContainer="CentralDBEntities">
+          <EntitySetMapping Name="AuthenticationTokens">
+            <EntityTypeMapping TypeName="eComBid.CentralDBModel.AuthenticationToken">
+              <MappingFragment StoreEntitySet="AuthenticationToken">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
+                <ScalarProperty Name="AuthToken" ColumnName="AuthToken" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ECBErrors">
+            <EntityTypeMapping TypeName="eComBid.CentralDBModel.ECBError">
+              <MappingFragment StoreEntitySet="ECBError">
+                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="FriendlyMessage" ColumnName="FriendlyMessage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SocialMediaSources">
             <EntityTypeMapping TypeName="eComBid.CentralDBModel.SocialMediaSource">
               <MappingFragment StoreEntitySet="SocialMediaSource">
@@ -308,66 +398,11 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="eComBid.CentralDBModel.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="IsBuyer" ColumnName="IsBuyer" />
-                <ScalarProperty Name="AvatarURL" ColumnName="AvatarURL" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="AlternateEmail" ColumnName="AlternateEmail" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="SecondaryPhone" ColumnName="SecondaryPhone" />
-                <ScalarProperty Name="UserType" ColumnName="UserType" />
-                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="SocialMediaSourceId" ColumnName="SocialMediaSourceId" />
-                <ScalarProperty Name="SocialMediaId" ColumnName="SocialMediaId" />
-                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
-                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserTypes">
-            <EntityTypeMapping TypeName="eComBid.CentralDBModel.UserType">
-              <MappingFragment StoreEntitySet="UserType">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
-                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AuthenticationTokens">
-            <EntityTypeMapping TypeName="eComBid.CentralDBModel.AuthenticationToken">
-              <MappingFragment StoreEntitySet="AuthenticationToken">
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
-                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
-                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
-                <ScalarProperty Name="AuthToken" ColumnName="AuthToken" />
-                <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="UserLogin" FunctionName="eComBid.CentralDBModel.Store.UserLogin" />
-          <FunctionImportMapping FunctionImportName="DeleteUserById" FunctionName="eComBid.CentralDBModel.Store.DeleteUserById" />
-          <FunctionImportMapping FunctionImportName="InsertUpdateUser" FunctionName="eComBid.CentralDBModel.Store.InsertUpdateUser" />
           <FunctionImportMapping FunctionImportName="DeleteAddressById" FunctionName="eComBid.CentralDBModel.Store.DeleteAddressById" />
+          <FunctionImportMapping FunctionImportName="DeleteUserById" FunctionName="eComBid.CentralDBModel.Store.DeleteUserById" />
           <FunctionImportMapping FunctionImportName="InsertUpdateAddress" FunctionName="eComBid.CentralDBModel.Store.InsertUpdateAddress" />
+          <FunctionImportMapping FunctionImportName="InsertUpdateUser" FunctionName="eComBid.CentralDBModel.Store.InsertUpdateUser" />
+          <FunctionImportMapping FunctionImportName="UserLogin" FunctionName="eComBid.CentralDBModel.Store.UserLogin" />
           <EntitySetMapping Name="Addresses">
             <EntityTypeMapping TypeName="eComBid.CentralDBModel.Address">
               <MappingFragment StoreEntitySet="Address">
@@ -383,17 +418,47 @@
                 <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
                 <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ECBErrors">
-            <EntityTypeMapping TypeName="eComBid.CentralDBModel.ECBError">
-              <MappingFragment StoreEntitySet="ECBError">
-                <ScalarProperty Name="FriendlyMessage" ColumnName="FriendlyMessage" />
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="eComBid.CentralDBModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="IsBuyer" ColumnName="IsBuyer" />
+                <ScalarProperty Name="AvatarURL" ColumnName="AvatarURL" />
+                <ScalarProperty Name="SocialMediaId" ColumnName="SocialMediaId" />
+                <ScalarProperty Name="SocialMediaSourceId" ColumnName="SocialMediaSourceId" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+                <ScalarProperty Name="UserTypeId" ColumnName="UserTypeId" />
+                <ScalarProperty Name="SecondaryPhone" ColumnName="SecondaryPhone" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="AlternateEmail" ColumnName="AlternateEmail" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserTypes">
+            <EntityTypeMapping TypeName="eComBid.CentralDBModel.UserType">
+              <MappingFragment StoreEntitySet="UserType">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="DateModified" ColumnName="DateModified" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

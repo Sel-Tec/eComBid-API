@@ -24,16 +24,19 @@ namespace eComBid.API.DAL
         public string AlternateEmail { get; set; }
         public string Phone { get; set; }
         public string SecondaryPhone { get; set; }
-        public Nullable<int> UserType { get; set; }
+        public Nullable<int> UserTypeId { get; set; }
         public Nullable<int> AddressId { get; set; }
         public Nullable<System.DateTime> DOB { get; set; }
         public Nullable<int> SocialMediaSourceId { get; set; }
         public string SocialMediaId { get; set; }
+        public string AvatarURL { get; set; }
+        public Nullable<bool> IsBuyer { get; set; }
         public System.DateTime DateAdded { get; set; }
         public System.DateTime DateModified { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
-        public string AvatarURL { get; set; }
-        public Nullable<bool> IsBuyer { get; set; }
+    
+        public virtual Address Address { get; set; }
+        public virtual UserType UserType { get; set; }
     }
 }

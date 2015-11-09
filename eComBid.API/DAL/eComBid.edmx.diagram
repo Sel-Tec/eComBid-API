@@ -4,13 +4,15 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f3536506fb244efda9974ecd5c30ab37" Name="Diagram1">
-        <EntityTypeShape EntityType="eComBid.CentralDBModel.SocialMediaSource" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="eComBid.CentralDBModel.User" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="eComBid.CentralDBModel.UserType" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="eComBid.CentralDBModel.AuthenticationToken" Width="1.5" PointX="3.375" PointY="6.75" />
-        <EntityTypeShape EntityType="eComBid.CentralDBModel.Address" Width="1.5" PointX="5.375" PointY="6.75" />
-        <EntityTypeShape EntityType="eComBid.CentralDBModel.ECBError" Width="1.5" PointX="7.375" PointY="0.75" />
+      <Diagram DiagramId="ebba328db78e4775b9659160d01bb470" Name="Diagram1">
+        <EntityTypeShape EntityType="eComBid.CentralDBModel.AuthenticationToken" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="eComBid.CentralDBModel.ECBError" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="eComBid.CentralDBModel.SocialMediaSource" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="eComBid.CentralDBModel.Address" Width="1.5" PointX="5.375" PointY="9" />
+        <EntityTypeShape EntityType="eComBid.CentralDBModel.User" Width="1.5" PointX="7.625" PointY="4.125" />
+        <EntityTypeShape EntityType="eComBid.CentralDBModel.UserType" Width="1.5" PointX="5.375" PointY="5.5" />
+        <AssociationConnector Association="eComBid.CentralDBModel.FK_User_Address" />
+        <AssociationConnector Association="eComBid.CentralDBModel.FK_User_UserType" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
