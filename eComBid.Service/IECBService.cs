@@ -17,7 +17,11 @@ namespace eComBid.Service
         User GetDummyUser(string username);
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Login", Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        [WebInvoke(UriTemplate = "Login", Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
         LoginResponse Login(LoginRequest request);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Register", Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
+        RegisterResponse Register(RegisterRequest userObj);
     }
 }

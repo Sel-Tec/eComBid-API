@@ -93,7 +93,24 @@ namespace eComBid.API.DAL
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("InsertUpdateAddress", idParameter, addressLine1Parameter, addressLine2Parameter, cityParameter, stateParameter, countryParameter, zipCodeParameter, isBillingAddressParameter, isShippingAddressParameter);
         }
     
-        public virtual ObjectResult<Nullable<decimal>> InsertUpdateUser(Nullable<int> id, string username, string password, string email, string name, string firstName, string lastName, string alternateEmail, string phone, string secondaryPhone, Nullable<int> userType, Nullable<int> addressId, Nullable<System.DateTime> dOB, Nullable<int> socialMediaSourceId, string socialMediaId, string avatarURL, Nullable<bool> isBuyer)
+        public virtual ObjectResult<Nullable<int>> UserLogin(string username, string password, Nullable<bool> isBuyer)
+        {
+            var usernameParameter = username != null ?
+                new ObjectParameter("Username", username) :
+                new ObjectParameter("Username", typeof(string));
+    
+            var passwordParameter = password != null ?
+                new ObjectParameter("Password", password) :
+                new ObjectParameter("Password", typeof(string));
+    
+            var isBuyerParameter = isBuyer.HasValue ?
+                new ObjectParameter("IsBuyer", isBuyer) :
+                new ObjectParameter("IsBuyer", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("UserLogin", usernameParameter, passwordParameter, isBuyerParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<decimal>> InsertUpdateUser(Nullable<int> id, string username, string password, string email, string name, string firstName, string lastName, string alternateEmail, string phone, string secondaryPhone, Nullable<int> userTypeId, Nullable<int> addressId, Nullable<System.DateTime> dOB, Nullable<int> socialMediaSourceId, string socialMediaId, string avatarURL, Nullable<bool> isBuyer)
         {
             var idParameter = id.HasValue ?
                 new ObjectParameter("Id", id) :
@@ -135,9 +152,9 @@ namespace eComBid.API.DAL
                 new ObjectParameter("SecondaryPhone", secondaryPhone) :
                 new ObjectParameter("SecondaryPhone", typeof(string));
     
-            var userTypeParameter = userType.HasValue ?
-                new ObjectParameter("UserType", userType) :
-                new ObjectParameter("UserType", typeof(int));
+            var userTypeIdParameter = userTypeId.HasValue ?
+                new ObjectParameter("UserTypeId", userTypeId) :
+                new ObjectParameter("UserTypeId", typeof(int));
     
             var addressIdParameter = addressId.HasValue ?
                 new ObjectParameter("AddressId", addressId) :
@@ -163,24 +180,7 @@ namespace eComBid.API.DAL
                 new ObjectParameter("IsBuyer", isBuyer) :
                 new ObjectParameter("IsBuyer", typeof(bool));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("InsertUpdateUser", idParameter, usernameParameter, passwordParameter, emailParameter, nameParameter, firstNameParameter, lastNameParameter, alternateEmailParameter, phoneParameter, secondaryPhoneParameter, userTypeParameter, addressIdParameter, dOBParameter, socialMediaSourceIdParameter, socialMediaIdParameter, avatarURLParameter, isBuyerParameter);
-        }
-    
-        public virtual ObjectResult<Nullable<int>> UserLogin(string username, string password, Nullable<bool> isBuyer)
-        {
-            var usernameParameter = username != null ?
-                new ObjectParameter("Username", username) :
-                new ObjectParameter("Username", typeof(string));
-    
-            var passwordParameter = password != null ?
-                new ObjectParameter("Password", password) :
-                new ObjectParameter("Password", typeof(string));
-    
-            var isBuyerParameter = isBuyer.HasValue ?
-                new ObjectParameter("IsBuyer", isBuyer) :
-                new ObjectParameter("IsBuyer", typeof(bool));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("UserLogin", usernameParameter, passwordParameter, isBuyerParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("InsertUpdateUser", idParameter, usernameParameter, passwordParameter, emailParameter, nameParameter, firstNameParameter, lastNameParameter, alternateEmailParameter, phoneParameter, secondaryPhoneParameter, userTypeIdParameter, addressIdParameter, dOBParameter, socialMediaSourceIdParameter, socialMediaIdParameter, avatarURLParameter, isBuyerParameter);
         }
     }
 }

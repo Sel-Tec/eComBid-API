@@ -5,6 +5,8 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Web;
 
+using eComBid.API.Domain;
+
 namespace eComBid.Service
 {
     [DataContract]
@@ -53,8 +55,34 @@ namespace eComBid.Service
     {
         [DataMember]
         public string AuthToken { get; set; }
+        [DataMember]
+        public new User Message { get; set; }
 
+    }
 
+    #endregion
+
+    #region Registration
+
+    [DataContract]
+    public class RegisterRequest : Request
+    {
+        [DataMember]
+        public string Username { get; set; }
+        [DataMember]
+        public string Password { get; set; }
+        [DataMember]
+        public string FirstName { get; set; }
+        [DataMember]
+        public string LastName { get; set; }
+        [DataMember]
+        public string Email { get; set; }
+    }
+
+    [DataContract]
+    public class RegisterResponse : Response
+    {
+        
     }
 
     #endregion

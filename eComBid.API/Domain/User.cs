@@ -224,7 +224,7 @@ namespace eComBid.API.Domain
                 using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
                 {
                     result = Convert.ToInt32(context.InsertUpdateUser(this.Id, this.Username, this.Password, this.Email, this.Name, this.FirstName, this.LastName, this.AlternateEmail, this.Phone, this.SecondaryPhone
-                                                                        , this.UType.Id, this.Addr.Id, this.DOB, this.SocialMediaSourceId, this.SocialMediaId, this._avatarURL, this.IsBuyer).FirstOrDefault());
+                                                                        , this.UType.Id == 0 ? null : (int?)this.UType.Id, this.Addr.Id == 0 ? null : (int?)this.Addr.Id, this.DOB, this.SocialMediaSourceId, this.SocialMediaId, this._avatarURL, this.IsBuyer).FirstOrDefault());
                     if (result > 0)
                         this.Id = result;
                 }

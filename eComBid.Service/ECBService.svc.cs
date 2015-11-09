@@ -33,31 +33,76 @@ namespace eComBid.Service
             LoginResponse response = new LoginResponse();
             User user = AccountManager.Login(request.Username, request.Password);
 
-            if(user.IsAuthenticated)
+            WebOperationContext ctx = WebOperationContext.Current;
+            string deviceId;
+            string clientToken;
+            string userId;
+            ReadRequestHeader(ctx, out clientToken, out deviceId, out userId);
+
+            if (user.IsAuthenticated && !string.IsNullOrEmpty(deviceId)) 
             {
                 //Generate Auth token for the device/user
-                WebOperationContext ctx = WebOperationContext.Current;
-                string deviceId;
-                string clientToken;
-                string userId;
-
-                ReadRequestHeader(ctx, out clientToken, out deviceId, out userId);
                 string token = Authentication.GenerateNewToken(user.Id, deviceId);
                 Authentication auth = new Authentication(token);
                 SetResponseAuthentication(ctx, auth);
 
                 response.Id = user.Id;
                 response.IsSuccess = true;
-                response.Code = 0;
+                response.Code = 999;
                 response.AuthToken = token;
                 response.Message = user;
             }
+            else
+            {
+                response.Id = -1;
+                response.Message = null;
+                SetResponseAuthentication(ctx, Convert.ToInt32(userId), deviceId, false);
+            }
 
-            return null;
+            return response;
+        }
+
+        public RegisterResponse Register(RegisterRequest request)
+        {
+            RegisterResponse response = new RegisterResponse();
+            WebOperationContext ctx = WebOperationContext.Current;
+            string deviceId;
+            string clientToken;
+            string userId;
+            ReadRequestHeader(ctx, out clientToken, out deviceId, out userId);
+
+            User user = AccountManager.RegisterNewUser(request.Username, request.Password, request.FirstName, request.LastName, request.Email, null);
+
+            if (user.Id > 0)
+            {
+                response.Id = user.Id;
+                response.IsSuccess = true;
+                response.Code = 0;
+                response.Message = user;
+                SetResponseAuthentication(ctx, Convert.ToInt32(userId), deviceId, true);
+            }
+            else
+            {
+                response.Id = -1;
+                response.Code = 999;
+                response.Message = "Error occurred during registration, please try again later";
+                SetResponseAuthentication(ctx, Convert.ToInt32(userId), deviceId, false);
+            }
+
+            return response;
         }
 
 
         #region HelperMethods - HTTPHeader
+
+        public void SetResponseAuthentication(WebOperationContext context, int userId, string deviceId, bool isValid)
+        {
+            //Authentication auth = new Authentication();
+
+            context.OutgoingResponse.Headers.Add("X-Client-Unique-Id", deviceId);
+            context.OutgoingResponse.Headers.Add("X-Auth-Status", isValid.ToString());
+            context.OutgoingResponse.Headers.Add("X-User-Id", userId.ToString());
+        }
 
         public void SetResponseAuthentication(WebOperationContext context, Authentication auth)
         {
