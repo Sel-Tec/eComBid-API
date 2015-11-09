@@ -9,6 +9,7 @@ using System.Text;
 using eComBid.API.Domain;
 using System.ServiceModel.Channels;
 using eComBid.API.Security;
+using eComBid.API.Service;
 
 namespace eComBid.Service
 {
@@ -29,9 +30,28 @@ namespace eComBid.Service
 
         public LoginResponse Login(LoginRequest request)
         {
-            WebOperationContext ctx = WebOperationContext.Current;
-            Authentication auth = new Authentication(10, "IMEI-12345");
-            SetResponseAuthentication(ctx, auth);
+            LoginResponse response = new LoginResponse();
+            User user = AccountManager.Login(request.Username, request.Password);
+
+            if(user.IsAuthenticated)
+            {
+                //Generate Auth token for the device/user
+                WebOperationContext ctx = WebOperationContext.Current;
+                string deviceId;
+                string clientToken;
+                string userId;
+
+                ReadRequestHeader(ctx, out clientToken, out deviceId, out userId);
+                string token = Authentication.GenerateNewToken(user.Id, deviceId);
+                Authentication auth = new Authentication(token);
+                SetResponseAuthentication(ctx, auth);
+
+                response.Id = user.Id;
+                response.IsSuccess = true;
+                response.Code = 0;
+                response.AuthToken = token;
+                response.Message = user;
+            }
 
             return null;
         }

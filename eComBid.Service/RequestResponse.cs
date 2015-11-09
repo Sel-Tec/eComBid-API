@@ -24,6 +24,14 @@ namespace eComBid.Service
         public int Code { get; set; }
         [DataMember]
         public object Message { get; set; }
+
+        public Response()
+        {
+            Id = -1;
+            IsSuccess = false;
+            Code = 999;
+            Message = null;
+        }
     }
 
 
@@ -45,6 +53,8 @@ namespace eComBid.Service
     {
         [DataMember]
         public string AuthToken { get; set; }
+
+
     }
 
     #endregion

@@ -54,14 +54,14 @@ namespace eComBid.API.Security
 
         #region methods
 
-        public string GenerateNewToken(int userId, string deviceId)
+        public static string GenerateNewToken(int userId, string deviceId)
         {
             string key = Guid.NewGuid().ToString() + _seperator 
                         + deviceId + _seperator 
                         + userId + _seperator 
-                        + TokenGenerationDT.ToString();
+                        + DateTime.Now.ToString();
 
-            AuthToken = AESThenHMAC.SimpleEncryptWithPassword(key, _encryptionPassword);
+            string AuthToken = AESThenHMAC.SimpleEncryptWithPassword(key, _encryptionPassword);
             
             return AuthToken;
         }
