@@ -25,4 +25,27 @@ namespace eComBid.Service
         [DataMember]
         public object Message { get; set; }
     }
+
+
+    #region Login
+
+    [DataContract]
+    public class LoginRequest : Request
+    {
+        [DataMember]
+        public string Username { get; set; }
+        [DataMember]
+        public string Password { get; set; }
+        [DataMember]
+        public bool IsFirstLogin { get; set; }
+    }
+
+    [DataContract]
+    public class LoginResponse : Response
+    {
+        [DataMember]
+        public string AuthToken { get; set; }
+    }
+
+    #endregion
 }

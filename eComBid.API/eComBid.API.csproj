@@ -58,6 +58,9 @@
     <Compile Include="DAL\AuthenticationToken.cs">
       <DependentUpon>eComBid.tt</DependentUpon>
     </Compile>
+    <Compile Include="DAL\ECBError.cs">
+      <DependentUpon>eComBid.tt</DependentUpon>
+    </Compile>
     <Compile Include="DAL\eComBid.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

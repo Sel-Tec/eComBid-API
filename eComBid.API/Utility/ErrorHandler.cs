@@ -7,9 +7,10 @@ namespace eComBid.API.Utility
 
     //Define error codes types and their descripion
     //  Error Code      Description
-    //  10XX            Error Codes specific to the DB
-    //  20XX            Error Codes specific to the API
-    //  30XX            Error Codes specific to the WebService
+    //  10XX            Authentication Errors
+    //  20XX            Error Codes specific to the DB
+    //  30XX            Error Codes specific to the API
+    //  40XX            Error Codes specific to the WebService
     //  50XX            Business Logic error
 
     
@@ -28,7 +29,7 @@ namespace eComBid.API.Utility
         {
             ErrorCode = 999;
             ErrorDescription = "Undefined Error";
-            FriendlyMessage = "Error Occurred: Programmers on their way!";
+            FriendlyMessage = "Error Occurred: Debuggers on their way!";
         }
 
         public ErrorHandler(int errorCode) : this()
@@ -48,6 +49,17 @@ namespace eComBid.API.Utility
             this.IntenralException = internalException;
         }
 
+        public static string GetErrorCodeDescription(int errorCode)
+        {
+            string description;
+            using (DAL.CentralDBEntities context = new DAL.CentralDBEntities())
+            {
+                DAL.ECBError error = context.ECBErrors.Where(e => e.ErrorCode == errorCode).FirstOrDefault();
 
+                description = error.Description;
+            }
+
+            return description;
+        }
     }
 }
